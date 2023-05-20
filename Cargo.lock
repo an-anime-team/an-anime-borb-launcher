@@ -39,6 +39,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "anime-borb-launcher"
+version = "0.1.0"
+dependencies = [
+ "anime-launcher-sdk",
+ "anyhow",
+ "cached",
+ "fluent-templates",
+ "glib-build-tools",
+ "gtk4",
+ "lazy_static",
+ "libadwaita",
+ "md-5",
+ "open",
+ "relm4",
+ "rfd",
+ "serde_json",
+ "tracing",
+ "tracing-subscriber",
+ "unic-langid",
+]
+
+[[package]]
 name = "anime-game-core"
 version = "1.8.0"
 source = "git+https://github.com/an-anime-team/anime-game-core?tag=1.8.0#dbb9008bcdd6a7b8026567ff35417671a77c740e"
@@ -61,28 +83,6 @@ dependencies = [
  "tracing",
  "xz",
  "zip",
-]
-
-[[package]]
-name = "anime-game-launcher"
-version = "3.6.0"
-dependencies = [
- "anime-launcher-sdk",
- "anyhow",
- "cached",
- "fluent-templates",
- "glib-build-tools",
- "gtk4",
- "lazy_static",
- "libadwaita",
- "md-5",
- "open",
- "relm4",
- "rfd",
- "serde_json",
- "tracing",
- "tracing-subscriber",
- "unic-langid",
 ]
 
 [[package]]

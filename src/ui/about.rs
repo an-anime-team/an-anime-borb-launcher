@@ -33,7 +33,7 @@ impl SimpleComponent for AboutDialog {
 
     view! {
         dialog = adw::AboutWindow {
-            set_application_name: "An Anime Game Launcher",
+            set_application_name: "Anime Borb Launcher",
             set_application_icon: APP_ID,
 
             set_website: "https://github.com/an-anime-team/an-anime-game-launcher",

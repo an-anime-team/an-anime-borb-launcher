@@ -22,7 +22,7 @@ pub mod ui;
 use ui::main::*;
 use ui::first_run::main::*;
 
-pub const APP_ID: &str = "moe.launcher.an-anime-game-launcher";
+pub const APP_ID: &str = "moe.launcher.anime-borb-launcher";
 pub const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const APP_DEBUG: bool = cfg!(debug_assertions);
 
@@ -129,8 +129,8 @@ fn main() {
         .expect("Failed to register resources");
 
     // Set application's title
-    gtk::glib::set_application_name("An Anime Game Launcher");
-    gtk::glib::set_program_name(Some("An Anime Game Launcher"));
+    gtk::glib::set_application_name("Anime Borb Launcher");
+    gtk::glib::set_program_name(Some("Anime Borb Launcher"));
 
     // Set global css
     relm4::set_global_css(&format!("
