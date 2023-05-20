@@ -36,8 +36,8 @@ impl SimpleComponent for AboutDialog {
             set_application_name: "Anime Borb Launcher",
             set_application_icon: APP_ID,
 
-            set_website: "https://github.com/an-anime-team/an-anime-game-launcher",
-            set_issue_url: "https://github.com/an-anime-team/an-anime-game-launcher/issues",
+            set_website: "https://github.com/an-anime-team/anime-borb-launcher",
+            set_issue_url: "https://github.com/an-anime-team/anime-borb-launcher/issues",
 
             set_license_type: gtk::License::Gpl30,
             set_version: &APP_VERSION,
@@ -45,10 +45,6 @@ impl SimpleComponent for AboutDialog {
             set_developers: &[
                 "Nikita Podvirnyy https://github.com/krypt0nn"
             ],
-
-            add_credit_section: (Some("Patch developer"), &[
-                "@Krock https://notabug.org/Krock/dawn"
-            ]),
 
             add_credit_section: (Some("An Anime Team"), &[
                 "Nikita Podvirnyy https://github.com/krypt0nn",
@@ -60,7 +56,7 @@ impl SimpleComponent for AboutDialog {
             ]),
 
             set_artists: &[
-                "@nightany https://pinterest.com/pin/356206651788051017"
+                "@Aris https://www.pinterest.com/pin/10414642878933084"
             ],
 
             set_translator_credits: &[
@@ -84,7 +80,7 @@ impl SimpleComponent for AboutDialog {
             ].join("\n"),
 
             set_release_notes_version: &APP_VERSION,
-            set_release_notes: &[
+            /*set_release_notes: &[
                 "<p>Added</p>",
 
                 "<ul>",
@@ -108,7 +104,7 @@ impl SimpleComponent for AboutDialog {
                     "<li>Fixed wine tools running using proton builds</li>",
                     "<li>Fixed sandboxed game running (sounds are broken for now)</li>",
                 "</ul>",
-            ].join("\n"),
+            ].join("\n"),*/
 
             set_modal: true,
             set_hide_on_close: true,
