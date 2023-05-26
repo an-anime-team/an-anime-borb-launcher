@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.7.0] - 24.05.2023
+
+### Added
+
+- Added Italian
+- Added Indonesian
+- Added dynamic main button icon switching
+- Set button label as "Resume" when the diff is part downloaded
+- Added options to use wine / gstreamer shared libraries from selected wine build.
+  These options will configure `LD_LIBRARY_PATH` and `GST_PLUGIN_PATH` environment variables
+- Added setting of `LC_ALL` in wine lang setting
+- Added `LAUNCHER_REQUESTS_TIMEOUT` environment variable
+- Added option to disable main patch applying
+
+### Fixed
+
+- Fixed session applying on each launcher start
+- Fixed predownload button ui
+- Fixed proton builds integration with sandbox
+- Fixed compatibility between sessions manager and sandbox
+- Fixed sandboxing of inexisting folders
+
+### Changed
+
+- Apply selected session before launching the game.
+  This will properly save your game session when you switch between wine prefixes
+- Redesigned main button
+- Used `whatadistro` to identify recommended package manager in the first run window
+- Moved a lot of settings to separate page
+- Set fsr quality mode in enhancements settings instead of strength
+- Updated fps unlocker data
+- Made temporary workaround to the game API changes
+- Increased default requests timeout to 8 seconds
+- Updated minreq to support `http_proxy`-like variables
+- Disabled xlua patch applying by default
+
+### Removed
+
+- Removed Futex2 wine sync option
+
 ## [3.6.0] - 06.05.2023
 
 ### Added
@@ -224,7 +264,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <br>
 
-[unreleased]: https://github.com/an-anime-team/an-anime-game-launcher/compare/3.6.0...next
+[unreleased]: https://github.com/an-anime-team/an-anime-game-launcher/compare/3.7.0...next
+[3.7.0]: https://github.com/an-anime-team/an-anime-game-launcher/compare/3.6.0...3.7.0
 [3.6.0]: https://github.com/an-anime-team/an-anime-game-launcher/compare/3.5.2...3.6.0
 [3.5.2]: https://github.com/an-anime-team/an-anime-game-launcher/compare/3.5.1...3.5.2
 [3.5.1]: https://github.com/an-anime-team/an-anime-game-launcher/compare/3.5.0...3.5.1
