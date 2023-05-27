@@ -130,8 +130,8 @@ fn main() {
         .expect("Failed to register resources");
 
     // Set application's title
-    gtk::glib::set_application_name("Anime Borb Launcher");
-    gtk::glib::set_program_name(Some("Anime Borb Launcher"));
+    gtk::glib::set_application_name("An Anime Borb Launcher");
+    gtk::glib::set_program_name(Some("An Anime Borb Launcher"));
 
     // Set global css
     relm4::set_global_css(&format!("

@@ -35,7 +35,7 @@ impl SimpleAsyncComponent for WelcomeApp {
                 },
 
                 gtk::Label {
-                    set_label: "Anime Borb Launcher",
+                    set_label: "An Anime Borb Launcher",
                     set_margin_top: 32,
                     add_css_class: "title-1"
                 },

@@ -1,7 +1,7 @@
 welcome = Bienvenu
 
 welcome-page-message =
-    Bonjour ! Bienvenu dans Anime Borb Launcher
+    Bonjour ! Bienvenu dans An Anime Borb Launcher
 
     Nous devons préparer quelques choses et télécharger les composants par défaut avant que vous ne puissiez démarrer le jeu
 
