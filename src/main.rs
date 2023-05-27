@@ -22,7 +22,7 @@ pub mod ui;
 use ui::main::*;
 use ui::first_run::main::*;
 
-pub const APP_ID: &str = "moe.launcher.anime-borb-launcher";
+pub const APP_ID: &str = "moe.launcher.an-anime-borb-launcher";
 pub const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
 pub const APP_DEBUG: bool = cfg!(debug_assertions);
 
