@@ -99,7 +99,8 @@ fn main() {
             }
         })
         .with_filter(filter_fn(|metadata| {
-            !metadata.target().contains("rustls")
+            !metadata.target().contains("rustls") &&
+            !metadata.target().contains("minreq")
         }));
 
     // Prepare debug file logger
@@ -113,7 +114,8 @@ fn main() {
         .with_ansi(false)
         .with_writer(std::sync::Arc::new(file))
         .with_filter(filter_fn(|metadata| {
-            !metadata.target().contains("rustls")
+            !metadata.target().contains("rustls") &&
+            !metadata.target().contains("minreq")
         }));
 
     tracing_subscriber::registry()
