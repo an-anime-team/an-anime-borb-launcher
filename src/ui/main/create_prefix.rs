@@ -3,7 +3,7 @@ use relm4::prelude::*;
 use anime_launcher_sdk::wincompatlib::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::genshin::config::Config;
+use anime_launcher_sdk::pgr::config::Config;
 
 use crate::i18n::*;
 use super::{App, AppMsg};
@@ -34,7 +34,6 @@ pub fn create_prefix(sender: ComponentSender<App>) {
                 sender.input(AppMsg::DisableButtons(false));
                 sender.input(AppMsg::UpdateLauncherState {
                     perform_on_download_needed: false,
-                    apply_patch_if_needed: false,
                     show_status_page: true
                 });
             });

@@ -10,10 +10,8 @@ use crate::i18n::tr;
 use crate::*;
 
 use super::welcome::*;
-use super::tos_warning::*;
 use super::dependencies::*;
 use super::default_paths::*;
-use super::select_voiceovers::*;
 use super::download_components::*;
 use super::finish::*;
 
@@ -23,10 +21,8 @@ pub static mut MAIN_WINDOW: Option<adw::ApplicationWindow> = None;
 
 pub struct FirstRunApp {
     welcome: AsyncController<WelcomeApp>,
-    tos_warning: AsyncController<TosWarningApp>,
     dependencies: AsyncController<DependenciesApp>,
     default_paths: AsyncController<DefaultPathsApp>,
-    select_voiceovers: AsyncController<SelectVoiceoversApp>,
     download_components: AsyncController<DownloadComponentsApp>,
     finish: AsyncController<FinishApp>,
 
@@ -41,10 +37,8 @@ pub struct FirstRunApp {
 pub enum FirstRunAppMsg {
     SetLoadingStatus(Option<Option<String>>),
 
-    ScrollToTosWarning,
     ScrollToDependencies,
     ScrollToDefaultPaths,
-    ScrollToSelectVoiceovers,
     ScrollToDownloadComponents,
     ScrollToFinish,
 
@@ -101,10 +95,8 @@ impl SimpleComponent for FirstRunApp {
                         set_allow_scroll_wheel: false,
 
                         append = model.welcome.widget(),
-                        append = model.tos_warning.widget(),
                         append = model.dependencies.widget(),
                         append = model.default_paths.widget(),
-                        append = model.select_voiceovers.widget(),
                         append = model.download_components.widget(),
                         append = model.finish.widget(),
                     },
@@ -136,20 +128,12 @@ impl SimpleComponent for FirstRunApp {
                 .launch(())
                 .forward(sender.input_sender(), std::convert::identity),
 
-            tos_warning: TosWarningApp::builder()
-                .launch(())
-                .forward(sender.input_sender(), std::convert::identity),
-
             dependencies: DependenciesApp::builder()
                 .launch(())
                 .forward(sender.input_sender(), std::convert::identity),
 
             default_paths: DefaultPathsApp::builder()
                 .launch(false)
-                .forward(sender.input_sender(), std::convert::identity),
-
-            select_voiceovers: SelectVoiceoversApp::builder()
-                .launch(())
                 .forward(sender.input_sender(), std::convert::identity),
 
             download_components: DownloadComponentsApp::builder()
@@ -191,12 +175,6 @@ impl SimpleComponent for FirstRunApp {
                 self.loading = status;
             }
 
-            FirstRunAppMsg::ScrollToTosWarning => {
-                self.title = tr("tos-violation-warning");
-
-                self.carousel.scroll_to(self.tos_warning.widget(), true);
-            }
-
             FirstRunAppMsg::ScrollToDependencies => {
                 self.title = tr("dependencies");
 
@@ -207,12 +185,6 @@ impl SimpleComponent for FirstRunApp {
                 self.title = tr("default-paths");
 
                 self.carousel.scroll_to(self.default_paths.widget(), true);
-            }
-
-            FirstRunAppMsg::ScrollToSelectVoiceovers => {
-                self.title = tr("select-voice-packages");
-
-                self.carousel.scroll_to(self.select_voiceovers.widget(), true);
             }
 
             FirstRunAppMsg::ScrollToDownloadComponents => {

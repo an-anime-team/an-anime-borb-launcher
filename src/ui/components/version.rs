@@ -7,10 +7,9 @@ use adw::prelude::*;
 use gtk::glib::clone;
 
 use anime_launcher_sdk::anime_game_core::prelude::*;
-use anime_launcher_sdk::anime_game_core::genshin::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::genshin::config::Config;
+use anime_launcher_sdk::pgr::config::Config;
 
 use std::path::PathBuf;
 
@@ -180,7 +179,7 @@ impl SimpleAsyncComponent for ComponentVersion {
                                         _ => ()
                                     }
 
-                                    progress_bar_sender.send(ProgressBarMsg::UpdateFromState(DiffUpdate::InstallerUpdate(state)));
+                                    progress_bar_sender.send(ProgressBarMsg::UpdateFromState(state));
                                 });
                             }));
                         }

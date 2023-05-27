@@ -10,7 +10,7 @@ use anime_launcher_sdk::components::*;
 use anime_launcher_sdk::components::wine::WincompatlibWine;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::genshin::config::Config;
+use anime_launcher_sdk::pgr::config::Config;
 
 use std::path::PathBuf;
 
@@ -418,7 +418,7 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
                                         _ => ()
                                     }
 
-                                    progress_bar_input.send(ProgressBarMsg::UpdateFromState(DiffUpdate::InstallerUpdate(update)));
+                                    progress_bar_input.send(ProgressBarMsg::UpdateFromState(update));
                                 });
                             }
 
@@ -529,7 +529,7 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
                                         _ => ()
                                     }
 
-                                    progress_bar_input.send(ProgressBarMsg::UpdateFromState(DiffUpdate::InstallerUpdate(update)));
+                                    progress_bar_input.send(ProgressBarMsg::UpdateFromState(update));
                                 });
                             }
 

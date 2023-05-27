@@ -1,13 +1,13 @@
 use relm4::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::genshin::config::{Config, Schema};
+use anime_launcher_sdk::pgr::config::{Config, Schema};
 
-use anime_launcher_sdk::genshin::states::LauncherState;
-use anime_launcher_sdk::genshin::consts::launcher_dir;
+use anime_launcher_sdk::pgr::states::LauncherState;
+use anime_launcher_sdk::pgr::consts::launcher_dir;
 
 use anime_launcher_sdk::anime_game_core::prelude::*;
-use anime_launcher_sdk::anime_game_core::genshin::prelude::*;
+use anime_launcher_sdk::anime_game_core::pgr::prelude::*;
 
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::filter::*;
@@ -41,7 +41,7 @@ lazy_static::lazy_static! {
     /// This one is used to prepare some launcher UI components on start
     pub static ref CONFIG: Schema = Config::get().expect("Failed to load config");
 
-    pub static ref GAME: Game = Game::new(CONFIG.game.path.for_edition(CONFIG.launcher.edition), CONFIG.launcher.edition);
+    pub static ref GAME: Game = Game::new(CONFIG.game.path.to_path_buf(), ());
 
     /// Path to launcher folder. Standard is `$HOME/.local/share/anime-game-launcher`
     pub static ref LAUNCHER_FOLDER: PathBuf = launcher_dir().expect("Failed to get launcher folder");
@@ -185,24 +185,10 @@ fn main() {
             let state = LauncherState::get_from_config(|_| {})
                 .expect("Failed to get launcher state");
 
-            match state {
-                LauncherState::Launch => {
-                    anime_launcher_sdk::genshin::game::run().expect("Failed to run the game");
+            if let LauncherState::Launch = state {
+                anime_launcher_sdk::pgr::game::run().expect("Failed to run the game");
 
-                    return;
-                }
-
-                LauncherState::PredownloadAvailable { .. } |
-                LauncherState::UnityPlayerPatchAvailable(UnityPlayerPatch { status: PatchStatus::NotAvailable, .. }) |
-                LauncherState::XluaPatchAvailable(XluaPatch { status: PatchStatus::NotAvailable, .. }) => {
-                    if just_run_game {
-                        anime_launcher_sdk::genshin::game::run().expect("Failed to run the game");
-
-                        return;
-                    }
-                }
-
-                _ => ()
+                return;
             }
         }
 

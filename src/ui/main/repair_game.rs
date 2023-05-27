@@ -5,8 +5,6 @@ use relm4::{
 
 use gtk::glib::clone;
 
-use std::path::Path;
-
 use crate::*;
 use crate::i18n::*;
 use crate::ui::components::*;
@@ -20,19 +18,9 @@ pub fn repair_game(sender: ComponentSender<App>, progress_bar_input: Sender<Prog
     sender.input(AppMsg::SetDownloading(true));
 
     std::thread::spawn(move || {
-        match repairer::try_get_integrity_files(config.launcher.edition, None) {
-            Ok(mut files) => {
-                // Add voiceovers files
-                let game_path = config.game.path.for_edition(config.launcher.edition).to_path_buf();
-                let game = Game::new(&game_path, config.launcher.edition);
-
-                if let Ok(voiceovers) = game.get_voice_packages() {
-                    for package in voiceovers {
-                        if let Ok(mut voiceover_files) = repairer::try_get_voice_integrity_files(config.launcher.edition, package.locale(), None) {
-                            files.append(&mut voiceover_files);
-                        }
-                    }
-                }
+        match repairer::try_get_integrity_files(None) {
+            Ok(files) => {
+                let game_path = config.game.path;
 
                 progress_bar_input.send(ProgressBarMsg::UpdateProgress(0, 0));
 
@@ -105,59 +93,16 @@ pub fn repair_game(sender: ComponentSender<App>, progress_bar_input: Sender<Prog
 
                     let total = broken.len() as f64;
 
-                    let player_patch = UnityPlayerPatch::from_folder(&config.patch.path, config.launcher.edition).unwrap()
-                        .is_applied(&game_path).unwrap();
-
-                    let xlua_patch = XluaPatch::from_folder(&config.patch.path, config.launcher.edition).unwrap()
-                        .is_applied(&game_path).unwrap();
-
-                    tracing::debug!("Patches status: player({player_patch}), xlua({xlua_patch})");
-
-                    fn should_ignore(path: &Path, player_patch: bool, xlua_patch: bool) -> bool {
-                        // Files managed by launch.bat file
-                        for part in ["crashreport.exe", "upload_crash.exe"] {
-                            if path.ends_with(part) {
-                                return true;
-                            }
-                        }
-
-                        // UnityPlayer patch related files
-                        if player_patch {
-                            for part in ["UnityPlayer.dll", "vulkan-1.dll"] {
-                                if path.ends_with(part) {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        // Xlua patch related files
-                        if xlua_patch {
-                            for part in ["xlua.dll", "mhypbase.dll"] {
-                                if path.ends_with(part) {
-                                    return true;
-                                }
-                            }
-                        }
-
-                        false
-                    }
-
                     for (i, file) in broken.into_iter().enumerate() {
-                        if !should_ignore(&file.path, player_patch, xlua_patch) {
-                            tracing::debug!("Repairing file: {}", file.path.to_string_lossy());
+                        tracing::debug!("Repairing file: {}", file.path.to_string_lossy());
 
-                            if let Err(err) = file.repair(&game_path) {
-                                sender.input(AppMsg::Toast {
-                                    title: tr("game-file-repairing-error"),
-                                    description: Some(err.to_string())
-                                });
+                        if let Err(err) = file.repair(&game_path) {
+                            sender.input(AppMsg::Toast {
+                                title: tr("game-file-repairing-error"),
+                                description: Some(err.to_string())
+                            });
 
-                                tracing::error!("Failed to repair game file: {err}");
-                            }
-                        }
-
-                        else {
-                            tracing::debug!("Skipped file: {}", file.path.to_string_lossy());
+                            tracing::error!("Failed to repair game file: {err}");
                         }
 
                         progress_bar_input.send(ProgressBarMsg::UpdateProgress(i as u64, total as u64));

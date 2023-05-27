@@ -4,11 +4,11 @@ use relm4::component::*;
 use gtk::prelude::*;
 use adw::prelude::*;
 
-use anime_launcher_sdk::anime_game_core::genshin::prelude::*;
+use anime_launcher_sdk::anime_game_core::pgr::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::genshin::config::Config;
-use anime_launcher_sdk::genshin::config::schema::launcher::LauncherStyle;
+use anime_launcher_sdk::pgr::config::Config;
+use anime_launcher_sdk::pgr::config::schema::launcher::LauncherStyle;
 
 use crate::i18n::tr;
 
@@ -27,14 +27,6 @@ pub enum PreferencesAppMsg {
     /// Supposed to be called automatically on app's run when the latest game version
     /// was retrieved from the API
     SetGameDiff(Option<VersionDiff>),
-
-    /// Supposed to be called automatically on app's run when the latest UnityPlayer patch version
-    /// was retrieved from remote repos
-    SetUnityPlayerPatch(Option<UnityPlayerPatch>),
-
-    /// Supposed to be called automatically on app's run when the latest xlua patch version
-    /// was retrieved from remote repos
-    SetXluaPatch(Option<XluaPatch>),
 
     SetLauncherStyle(LauncherStyle),
 
@@ -114,22 +106,10 @@ impl SimpleAsyncComponent for PreferencesApp {
     }
 
     async fn update(&mut self, msg: Self::Input, sender: AsyncComponentSender<Self>) {
-        tracing::debug!("Called preferences window event: {:?}", msg);
-
         match msg {
             #[allow(unused_must_use)]
             PreferencesAppMsg::SetGameDiff(diff) => {
                 self.general.sender().send(GeneralAppMsg::SetGameDiff(diff));
-            }
-
-            #[allow(unused_must_use)]
-            PreferencesAppMsg::SetUnityPlayerPatch(patch) => {
-                self.general.sender().send(GeneralAppMsg::SetUnityPlayerPatch(patch));
-            }
-
-            #[allow(unused_must_use)]
-            PreferencesAppMsg::SetXluaPatch(patch) => {
-                self.general.sender().send(GeneralAppMsg::SetXluaPatch(patch));
             }
 
             #[allow(unused_must_use)]
@@ -141,7 +121,6 @@ impl SimpleAsyncComponent for PreferencesApp {
             PreferencesAppMsg::UpdateLauncherState => {
                 sender.output(Self::Output::UpdateLauncherState {
                     perform_on_download_needed: false,
-                    apply_patch_if_needed: false,
                     show_status_page: false
                 });
             }

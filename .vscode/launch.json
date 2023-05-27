@@ -11,11 +11,11 @@
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=anime-game-launcher",
-                    "--package=anime-game-launcher"
+                    "--bin=anime-borb-launcher",
+                    "--package=anime-borb-launcher"
                 ],
                 "filter": {
-                    "name": "anime-game-launcher",
+                    "name": "anime-borb-launcher",
                     "kind": "bin"
                 }
             },

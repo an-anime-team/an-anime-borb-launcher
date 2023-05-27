@@ -11,22 +11,20 @@ use adw::prelude::*;
 use gtk::glib::clone;
 
 mod repair_game;
-mod apply_patch;
 mod download_wine;
 mod create_prefix;
 mod download_diff;
-mod migrate_folder;
 mod launch;
 
 use anime_launcher_sdk::components::loader::ComponentsLoader;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::genshin::config::Config;
+use anime_launcher_sdk::pgr::config::Config;
 
-use anime_launcher_sdk::genshin::config::schema::launcher::LauncherStyle;
+use anime_launcher_sdk::pgr::config::schema::launcher::LauncherStyle;
 
-use anime_launcher_sdk::genshin::states::*;
-use anime_launcher_sdk::genshin::consts::*;
+use anime_launcher_sdk::pgr::states::*;
+use anime_launcher_sdk::pgr::consts::*;
 
 use crate::*;
 use crate::i18n::*;
@@ -41,7 +39,7 @@ relm4::new_stateless_action!(LauncherFolder, WindowActionGroup, "launcher_folder
 relm4::new_stateless_action!(GameFolder, WindowActionGroup, "game_folder");
 relm4::new_stateless_action!(ConfigFile, WindowActionGroup, "config_file");
 relm4::new_stateless_action!(DebugFile, WindowActionGroup, "debug_file");
-relm4::new_stateless_action!(WishUrl, WindowActionGroup, "wish_url");
+// relm4::new_stateless_action!(WishUrl, WindowActionGroup, "wish_url");
 
 relm4::new_stateless_action!(About, WindowActionGroup, "about");
 
@@ -69,9 +67,6 @@ pub enum AppMsg {
         /// Needed for chained executions (e.g. update one voice after another)
         perform_on_download_needed: bool,
 
-        /// Automatically start patch applying if possible and needed
-        apply_patch_if_needed: bool,
-
         /// Show status gathering progress page
         show_status_page: bool
     },
@@ -79,14 +74,6 @@ pub enum AppMsg {
     /// Supposed to be called automatically on app's run when the latest game version
     /// was retrieved from the API
     SetGameDiff(Option<VersionDiff>),
-
-    /// Supposed to be called automatically on app's run when the latest UnityPlayer patch version
-    /// was retrieved from remote repos
-    SetUnityPlayerPatch(Option<UnityPlayerPatch>),
-
-    /// Supposed to be called automatically on app's run when the latest xlua patch version
-    /// was retrieved from remote repos
-    SetXluaPatch(Option<XluaPatch>),
 
     /// Supposed to be called automatically on app's run when the launcher state was chosen
     SetLauncherState(Option<LauncherState>),
@@ -100,7 +87,6 @@ pub enum AppMsg {
     OpenPreferences,
     RepairGame,
 
-    PredownloadUpdate,
     PerformAction,
 
     HideWindow,
@@ -127,9 +113,9 @@ impl SimpleComponent for App {
                 &tr("debug-file") => DebugFile,
             },
 
-            section! {
+            /*section! {
                 &tr("wish-url") => WishUrl
-            },
+            },*/
 
             section! {
                 &tr("about") => About
@@ -305,125 +291,28 @@ impl SimpleComponent for App {
                                     set_css_classes: &["background", "round-bin"],
 
                                     gtk::Button {
-                                        set_width_request: 44,
-
-                                        #[watch]
-                                        set_tooltip_text: Some(&tr_args("predownload-update", [
-                                            ("version", match model.state.as_ref() {
-                                                Some(LauncherState::PredownloadAvailable { game, .. }) => game.latest().to_string(),
-                                                _ => String::from("?")
-                                            }.into()),
-
-                                            ("size", match model.state.as_ref() {
-                                                Some(LauncherState::PredownloadAvailable { game, voices }) => {
-                                                    let mut size = game.downloaded_size().unwrap_or(0);
-
-                                                    for voice in voices {
-                                                        size += voice.downloaded_size().unwrap_or(0);
-                                                    }
-
-                                                    prettify_bytes(size)
-                                                }
-
-                                                _ => String::from("?")
-                                            }.into())
-                                        ])),
-
-                                        #[watch]
-                                        set_visible: matches!(model.state.as_ref(), Some(LauncherState::PredownloadAvailable { .. })),
-
-                                        #[watch]
-                                        set_sensitive: match model.state.as_ref() {
-                                            Some(LauncherState::PredownloadAvailable { game, voices }) => {
-                                                let config = Config::get().unwrap();
-                                                let temp = config.launcher.temp.unwrap_or_else(std::env::temp_dir);
-
-                                                let downloaded = temp.join(game.file_name().unwrap()).exists() &&
-                                                    voices.iter().all(|voice| temp.join(voice.file_name().unwrap()).exists());
-
-                                                !downloaded
-                                            }
-
-                                            _ => false
-                                        },
-
-                                        #[watch]
-                                        set_css_classes: match model.state.as_ref() {
-                                            Some(LauncherState::PredownloadAvailable { game, voices }) => {
-                                                let config = Config::get().unwrap();
-                                                let temp = config.launcher.temp.unwrap_or_else(std::env::temp_dir);
-
-                                                let downloaded = temp.join(game.file_name().unwrap()).exists() &&
-                                                    voices.iter().all(|voice| temp.join(voice.file_name().unwrap()).exists());
-
-                                                if downloaded {
-                                                    &["success", "circular"]
-                                                } else {
-                                                    &["warning", "circular"]
-                                                }
-                                            }
-
-                                            _ => &["warning", "circular"]
-                                        },
-
-                                        set_icon_name: "document-save-symbolic",
-                                        set_hexpand: false,
-
-                                        connect_clicked => AppMsg::PredownloadUpdate
-                                    }
-                                },
-
-                                adw::Bin {
-                                    set_css_classes: &["background", "round-bin"],
-
-                                    gtk::Button {
                                         adw::ButtonContent {
                                             #[watch]
                                             set_icon_name: match &model.state {
-                                                Some(LauncherState::Launch) |
-                                                Some(LauncherState::PredownloadAvailable { .. }) => "media-playback-start-symbolic",
+                                                Some(LauncherState::Launch) => "media-playback-start-symbolic",
 
-                                                Some(LauncherState::FolderMigrationRequired { .. }) |
                                                 Some(LauncherState::WineNotInstalled) |
                                                 Some(LauncherState::PrefixNotExists) => "document-save-symbolic",
 
                                                 Some(LauncherState::GameUpdateAvailable(_)) |
-                                                Some(LauncherState::GameNotInstalled(_)) |
-                                                Some(LauncherState::VoiceUpdateAvailable(_)) |
-                                                Some(LauncherState::VoiceNotInstalled(_)) => "document-save-symbolic",
+                                                Some(LauncherState::GameNotInstalled(_)) => "document-save-symbolic",
 
-                                                Some(LauncherState::UnityPlayerPatchAvailable(UnityPlayerPatch { status, .. })) |
-                                                Some(LauncherState::XluaPatchAvailable(XluaPatch { status, .. })) => match status {
-                                                    PatchStatus::NotAvailable |
-                                                    PatchStatus::Outdated { .. } |
-                                                    PatchStatus::Preparation { .. } => "window-close-symbolic",
-
-                                                    PatchStatus::Testing { .. } |
-                                                    PatchStatus::Available { .. } => "document-save-symbolic"
-                                                }
-
-                                                Some(LauncherState::VoiceOutdated(_)) |
-                                                Some(LauncherState::GameOutdated(_)) |
                                                 None => "window-close-symbolic"
                                             },
 
                                             #[watch]
                                             set_label: &match &model.state {
-                                                Some(LauncherState::Launch) |
-                                                Some(LauncherState::PredownloadAvailable { .. }) => tr("launch"),
-
-                                                Some(LauncherState::FolderMigrationRequired { .. }) => tr("migrate-folders"),
-
-                                                Some(LauncherState::UnityPlayerPatchAvailable(_)) |
-                                                Some(LauncherState::XluaPatchAvailable(_)) => tr("apply-patch"),
+                                                Some(LauncherState::Launch) => tr("launch"),
 
                                                 Some(LauncherState::WineNotInstalled) => tr("download-wine"),
                                                 Some(LauncherState::PrefixNotExists)  => tr("create-prefix"),
 
-                                                Some(LauncherState::GameUpdateAvailable(diff)) |
-                                                Some(LauncherState::GameOutdated(diff)) |
-                                                Some(LauncherState::VoiceUpdateAvailable(diff)) |
-                                                Some(LauncherState::VoiceOutdated(diff)) => {
+                                                Some(LauncherState::GameUpdateAvailable(diff)) => {
                                                     match (Config::get(), diff.file_name()) {
                                                         (Ok(config), Some(filename)) => {
                                                             let temp = config.launcher.temp.unwrap_or_else(std::env::temp_dir);
@@ -441,72 +330,20 @@ impl SimpleComponent for App {
                                                     }
                                                 },
 
-                                                Some(LauncherState::GameNotInstalled(_)) |
-                                                Some(LauncherState::VoiceNotInstalled(_)) => tr("download"),
+                                                Some(LauncherState::GameNotInstalled(_)) => tr("download"),
 
                                                 None => String::from("...")
                                             }
                                         },
 
                                         #[watch]
-                                        set_sensitive: !model.disabled_buttons && match &model.state {
-                                            Some(LauncherState::GameOutdated { .. }) |
-                                            Some(LauncherState::VoiceOutdated(_)) => false,
-
-                                            Some(LauncherState::UnityPlayerPatchAvailable(UnityPlayerPatch { status, .. })) |
-                                            Some(LauncherState::XluaPatchAvailable(XluaPatch { status, .. })) => match status {
-                                                PatchStatus::NotAvailable |
-                                                PatchStatus::Outdated { .. } |
-                                                PatchStatus::Preparation { .. } => false,
-
-                                                PatchStatus::Testing { .. } |
-                                                PatchStatus::Available { .. } => true
-                                            },
-
-                                            Some(_) => true,
-
-                                            None => false
-                                        },
+                                        set_sensitive: !model.disabled_buttons && model.state.is_some(),
 
                                         #[watch]
                                         set_css_classes: match &model.state {
-                                            Some(LauncherState::GameOutdated { .. }) |
-                                            Some(LauncherState::VoiceOutdated(_)) => &["warning", "pill"],
-
-                                            Some(LauncherState::UnityPlayerPatchAvailable(UnityPlayerPatch { status, .. })) |
-                                            Some(LauncherState::XluaPatchAvailable(XluaPatch { status, .. })) => match status {
-                                                PatchStatus::NotAvailable |
-                                                PatchStatus::Outdated { .. } |
-                                                PatchStatus::Preparation { .. } => &["error", "pill"],
-
-                                                PatchStatus::Testing { .. } => &["warning", "pill"],
-                                                PatchStatus::Available { .. } => &["suggested-action", "pill"]
-                                            },
-
                                             Some(_) => &["suggested-action", "pill"],
-
                                             None => &["pill"]
                                         },
-
-                                        #[watch]
-                                        set_tooltip_text: Some(&match &model.state {
-                                            Some(LauncherState::GameOutdated { .. }) |
-                                            Some(LauncherState::VoiceOutdated(_)) => tr("main-window--version-outdated-tooltip"),
-
-                                            Some(LauncherState::FolderMigrationRequired { .. }) => tr("migrate-folders-tooltip"),
-
-                                            Some(LauncherState::UnityPlayerPatchAvailable(UnityPlayerPatch { status, .. })) |
-                                            Some(LauncherState::XluaPatchAvailable(XluaPatch { status, .. })) => match status {
-                                                PatchStatus::NotAvailable => tr("main-window--patch-unavailable-tooltip"),
-
-                                                PatchStatus::Outdated { .. } |
-                                                PatchStatus::Preparation { .. } => tr("main-window--patch-outdated-tooltip"),
-
-                                                _ => String::new()
-                                            },
-
-                                            _ => String::new()
-                                        }),
 
                                         set_hexpand: false,
                                         set_width_request: 200,
@@ -615,8 +452,8 @@ impl SimpleComponent for App {
 
         group.add_action::<GameFolder>(RelmAction::new_stateless(clone!(@strong sender => move |_| {
             let path = match Config::get() {
-                Ok(config) => config.game.path.for_edition(config.launcher.edition).to_path_buf(),
-                Err(_) => CONFIG.game.path.for_edition(CONFIG.launcher.edition).to_path_buf(),
+                Ok(config) => config.game.path,
+                Err(_) => CONFIG.game.path.clone(),
             };
 
             if let Err(err) = open::that(path) {
@@ -653,12 +490,12 @@ impl SimpleComponent for App {
             }
         })));
 
-        group.add_action::<WishUrl>(RelmAction::new_stateless(clone!(@strong sender => move |_| {
+        /*group.add_action::<WishUrl>(RelmAction::new_stateless(clone!(@strong sender => move |_| {
             std::thread::spawn(clone!(@strong sender => move || {
                 let config = Config::get().unwrap_or_else(|_| CONFIG.clone());
 
-                let web_cache = config.game.path.for_edition(config.launcher.edition)
-                    .join(config.launcher.edition.data_folder())
+                let web_cache = config.game.path
+                    .join(DATA_FOLDER_NAME)
                     .join("webCaches/Cache/Cache_Data/data_2");
 
                 if !web_cache.exists() {
@@ -711,7 +548,7 @@ impl SimpleComponent for App {
                     }
                 }
             }));
-        })));
+        })));*/
 
         group.add_action::<About>(RelmAction::new_stateless(move |_| {
             about_dialog_broker.send(AboutDialogMsg::Show);
@@ -792,77 +629,6 @@ impl SimpleComponent for App {
                 }
             }
 
-            // Update initial patch status
-
-            sender.input(AppMsg::SetLoadingStatus(Some(Some(tr("loading-patch-status")))));
-
-            // Sync local patch repo
-            let patch = Patch::new(&CONFIG.patch.path, CONFIG.launcher.edition);
-
-            match patch.is_sync(&CONFIG.patch.servers) {
-                Ok(Some(_)) => (),
-
-                Ok(None) => {
-                    for server in &CONFIG.patch.servers {
-                        match patch.sync(server) {
-                            Ok(_) => break,
-
-                            Err(err) => {
-                                tracing::error!("Failed to sync patch folder with remote: {server}: {err}");
-
-                                sender.input(AppMsg::Toast {
-                                    title: tr("patch-sync-failed"),
-                                    description: Some(err.to_string())
-                                });
-                            }
-                        }
-                    }
-                }
-
-                Err(err) => {
-                    tracing::error!("Failed to compare local patch folder with remote: {err}");
-
-                    sender.input(AppMsg::Toast {
-                        title: tr("patch-state-check-failed"),
-                        description: Some(err.to_string())
-                    });
-                }
-            }
-
-            // Get main UnityPlayer patch status
-            sender.input(AppMsg::SetUnityPlayerPatch(match patch.unity_player_patch() {
-                Ok(patch) => Some(patch),
-
-                Err(err) => {
-                    tracing::error!("Failed to fetch unity player patch info: {err}");
-
-                    sender.input(AppMsg::Toast {
-                        title: tr("patch-info-fetching-error"),
-                        description: Some(err.to_string())
-                    });
-
-                    None
-                }
-            }));
-
-            // Get additional xlua patch status
-            sender.input(AppMsg::SetXluaPatch(match patch.xlua_patch() {
-                Ok(patch) => Some(patch),
-
-                Err(err) => {
-                    tracing::error!("Failed to fetch xlua patch info: {err}");
-
-                    sender.input(AppMsg::Toast {
-                        title: tr("patch-info-fetching-error"),
-                        description: Some(err.to_string())
-                    });
-
-                    None
-                }
-            }));
-
-            tracing::info!("Updated patch status");
-
             // Update initial game version status
 
             sender.input(AppMsg::SetLoadingStatus(Some(Some(tr("loading-game-version")))));
@@ -886,7 +652,6 @@ impl SimpleComponent for App {
             // Update launcher state
             sender.input(AppMsg::UpdateLauncherState {
                 perform_on_download_needed: false,
-                apply_patch_if_needed: false,
                 show_status_page: true
             });
 
@@ -902,11 +667,9 @@ impl SimpleComponent for App {
     }
 
     fn update(&mut self, msg: Self::Input, sender: ComponentSender<Self>) {
-        tracing::debug!("Called main window event: {:?}", msg);
-
         match msg {
             // TODO: make function from this message like with toast
-            AppMsg::UpdateLauncherState { perform_on_download_needed, apply_patch_if_needed, show_status_page } => {
+            AppMsg::UpdateLauncherState { perform_on_download_needed, show_status_page } => {
                 if show_status_page {
                     sender.input(AppMsg::SetLoadingStatus(Some(Some(tr("loading-launcher-state")))));
                 } else {
@@ -918,16 +681,6 @@ impl SimpleComponent for App {
                         match state {
                             StateUpdating::Game => {
                                 sender.input(AppMsg::SetLoadingStatus(Some(Some(tr("loading-launcher-state--game")))));
-                            }
-
-                            StateUpdating::Voice(locale) => {
-                                sender.input(AppMsg::SetLoadingStatus(Some(Some(tr_args("loading-launcher-state--voice", [
-                                    ("locale", locale.to_name().to_owned().into())
-                                ])))));
-                            }
-
-                            StateUpdating::Patch => {
-                                sender.input(AppMsg::SetLoadingStatus(Some(Some(tr("loading-launcher-state--patch")))));
                             }
                         }
                     }
@@ -951,18 +704,11 @@ impl SimpleComponent for App {
                 } else {
                     self.disabled_buttons = false;
                 }
-                
+
                 if let Some(state) = state {
                     match state {
-                        LauncherState::VoiceUpdateAvailable(_) |
-                        LauncherState::VoiceNotInstalled(_) |
                         LauncherState::GameUpdateAvailable(_) |
                         LauncherState::GameNotInstalled(_) if perform_on_download_needed => {
-                            sender.input(AppMsg::PerformAction);
-                        }
-
-                        LauncherState::UnityPlayerPatchAvailable(_) |
-                        LauncherState::XluaPatchAvailable(_) if apply_patch_if_needed => {
                             sender.input(AppMsg::PerformAction);
                         }
 
@@ -974,16 +720,6 @@ impl SimpleComponent for App {
             #[allow(unused_must_use)]
             AppMsg::SetGameDiff(diff) => unsafe {
                 PREFERENCES_WINDOW.as_ref().unwrap_unchecked().sender().send(PreferencesAppMsg::SetGameDiff(diff));
-            }
-
-            #[allow(unused_must_use)]
-            AppMsg::SetUnityPlayerPatch(patch) => unsafe {
-                PREFERENCES_WINDOW.as_ref().unwrap_unchecked().sender().send(PreferencesAppMsg::SetUnityPlayerPatch(patch));
-            }
-
-            #[allow(unused_must_use)]
-            AppMsg::SetXluaPatch(patch) => unsafe {
-                PREFERENCES_WINDOW.as_ref().unwrap_unchecked().sender().send(PreferencesAppMsg::SetXluaPatch(patch));
             }
 
             AppMsg::SetLauncherState(state) => {
@@ -1012,74 +748,16 @@ impl SimpleComponent for App {
 
             AppMsg::RepairGame => repair_game::repair_game(sender, self.progress_bar.sender().to_owned()),
 
-            #[allow(unused_must_use)]
-            AppMsg::PredownloadUpdate => {
-                if let Some(LauncherState::PredownloadAvailable { game, mut voices }) = self.state.clone() {
-                    let tmp = Config::get().unwrap().launcher.temp.unwrap_or_else(std::env::temp_dir);
-
-                    self.downloading = true;
-
-                    let progress_bar_input = self.progress_bar.sender().clone();
-
-                    progress_bar_input.send(ProgressBarMsg::UpdateCaption(Some(tr("downloading"))));
-
-                    let mut diffs: Vec<VersionDiff> = vec![game];
-
-                    diffs.append(&mut voices);
-
-                    std::thread::spawn(move || {
-                        for mut diff in diffs {
-                            let result = diff.download_to(&tmp, clone!(@strong progress_bar_input => move |curr, total| {
-                                progress_bar_input.send(ProgressBarMsg::UpdateProgress(curr, total));
-                            }));
-
-                            if let Err(err) = result {
-                                sender.input(AppMsg::Toast {
-                                    title: tr("downloading-failed"),
-                                    description: Some(err.to_string())
-                                });
-
-                                tracing::error!("Failed to predownload update: {err}");
-
-                                break;
-                            }
-                        }
-
-                        sender.input(AppMsg::SetDownloading(false));
-                        sender.input(AppMsg::UpdateLauncherState {
-                            perform_on_download_needed: false,
-                            apply_patch_if_needed: false,
-                            show_status_page: true
-                        });
-                    });
-                }
-            }
-
             AppMsg::PerformAction => unsafe {
                 match self.state.as_ref().unwrap_unchecked() {
-                    LauncherState::UnityPlayerPatchAvailable(UnityPlayerPatch { status: PatchStatus::NotAvailable, .. }) |
-                    LauncherState::XluaPatchAvailable(XluaPatch { status: PatchStatus::NotAvailable, .. }) |
-                    LauncherState::PredownloadAvailable { .. } |
                     LauncherState::Launch => launch::launch(sender),
 
-                    LauncherState::FolderMigrationRequired { from, to, cleanup_folder } =>
-                        migrate_folder::migrate_folder(sender, from.to_owned(), to.to_owned(), cleanup_folder.to_owned()),
-
-                    LauncherState::UnityPlayerPatchAvailable(patch) => apply_patch::apply_patch(sender, patch.to_owned()),
-                    LauncherState::XluaPatchAvailable(patch) => apply_patch::apply_patch(sender, patch.to_owned()),
-
                     LauncherState::WineNotInstalled => download_wine::download_wine(sender, self.progress_bar.sender().to_owned()),
-
                     LauncherState::PrefixNotExists => create_prefix::create_prefix(sender),
 
-                    LauncherState::VoiceUpdateAvailable(diff) |
-                    LauncherState::VoiceNotInstalled(diff) |
                     LauncherState::GameUpdateAvailable(diff) |
                     LauncherState::GameNotInstalled(diff) =>
-                        download_diff::download_diff(sender, self.progress_bar.sender().to_owned(), diff.to_owned()),
-
-                    LauncherState::VoiceOutdated(_) |
-                    LauncherState::GameOutdated(_) => ()
+                        download_diff::download_diff(sender, self.progress_bar.sender().to_owned(), diff.to_owned())
                 }
             }
 
