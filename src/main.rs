@@ -44,23 +44,26 @@ lazy_static::lazy_static! {
     pub static ref GAME: Game = Game::new(CONFIG.game.path.to_path_buf(), ())
         .with_fast_verify(CONFIG.launcher.repairer.fast);
 
-    /// Path to launcher folder. Standard is `$HOME/.local/share/anime-game-launcher`
+    /// Path to launcher folder. Standard is `$HOME/.local/share/anime-borb-launcher`
     pub static ref LAUNCHER_FOLDER: PathBuf = launcher_dir().expect("Failed to get launcher folder");
 
-    /// Path to `debug.log` file. Standard is `$HOME/.local/share/anime-game-launcher/debug.log`
+    /// Path to `debug.log` file. Standard is `$HOME/.local/share/anime-borb-launcher/debug.log`
     pub static ref DEBUG_FILE: PathBuf = LAUNCHER_FOLDER.join("debug.log");
 
-    /// Path to `background` file. Standard is `$HOME/.local/share/anime-game-launcher/background`
+    /// Path to `background` file. Standard is `$HOME/.local/share/anime-borb-launcher/background`
     pub static ref BACKGROUND_FILE: PathBuf = LAUNCHER_FOLDER.join("background");
+
+    /// Path to `.background-hash` file. Standard is `$HOME/.local/share/anime-borb-launcher/.background-hash`
+    pub static ref BACKGROUND_HASH_FILE: PathBuf = LAUNCHER_FOLDER.join(".background-hash");
 
     /// Path to `.keep-background` file. Used to mark launcher that it shouldn't update background picture
     /// 
-    /// Standard is `$HOME/.local/share/anime-game-launcher/.keep-background`
+    /// Standard is `$HOME/.local/share/anime-borb-launcher/.keep-background`
     pub static ref KEEP_BACKGROUND_FILE: PathBuf = LAUNCHER_FOLDER.join(".keep-background");
 
     /// Path to `.first-run` file. Used to mark launcher that it should run FirstRun window
     /// 
-    /// Standard is `$HOME/.local/share/anime-game-launcher/.first-run`
+    /// Standard is `$HOME/.local/share/anime-borb-launcher/.first-run`
     pub static ref FIRST_RUN_FILE: PathBuf = LAUNCHER_FOLDER.join(".first-run");
 }
 
