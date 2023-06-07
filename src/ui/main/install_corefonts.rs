@@ -29,7 +29,7 @@ pub fn install_corefonts(sender: ComponentSender<App>, progress_bar_input: Sende
                 progress_bar_input.send(ProgressBarMsg::DisplayFraction(false)).unwrap();
 
                 for (i, font) in fonts.iter().copied().enumerate() {
-                    progress_bar_input.send(ProgressBarMsg::UpdateCaption(Some(format!("{}: {}", tr("downloading"), font.name())))).unwrap();
+                    progress_bar_input.send(ProgressBarMsg::UpdateCaption(Some(format!("{} {}", tr("downloading"), font.name())))).unwrap();
 
                     if let Err(err) = wine.install_corefont(font) {
                         tracing::error!("Failed to install font: {}", font.name());
