@@ -68,7 +68,7 @@ impl SimpleAsyncComponent for DependenciesApp {
                         },
 
                         gtk::Entry {
-                            set_text: "sudo pacman -Syu git",
+                            set_text: "sudo pacman -Syu git cabextract",
                             set_editable: false
                         }
                     },
@@ -85,7 +85,7 @@ impl SimpleAsyncComponent for DependenciesApp {
                         },
 
                         gtk::Entry {
-                            set_text: "sudo apt install git",
+                            set_text: "sudo apt install git cabextract",
                             set_editable: false
                         }
                     },
@@ -102,7 +102,7 @@ impl SimpleAsyncComponent for DependenciesApp {
                         },
 
                         gtk::Entry {
-                            set_text: "sudo dnf install git",
+                            set_text: "sudo dnf install git cabextract",
                             set_editable: false
                         }
                     }
@@ -169,16 +169,18 @@ impl SimpleAsyncComponent for DependenciesApp {
         match msg {
             #[allow(unused_must_use)]
             DependenciesAppMsg::Continue => {
-                if !is_available("git") {
-                    sender.output(Self::Output::Toast {
-                        title: tr_args("package-not-available", [("package", "git".into())]),
-                        description: None
-                    });
+                for package in ["git", "cabextract"] {
+                    if !is_available(package) {
+                        sender.output(Self::Output::Toast {
+                            title: tr_args("package-not-available", [("package", package.into())]),
+                            description: None
+                        });
+
+                        return;
+                    }
                 }
 
-                else {
-                    sender.output(Self::Output::ScrollToDefaultPaths);
-                }
+                sender.output(Self::Output::ScrollToDefaultPaths);
             }
 
             DependenciesAppMsg::Exit => relm4::main_application().quit()

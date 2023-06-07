@@ -13,6 +13,8 @@ use gtk::glib::clone;
 mod repair_game;
 mod download_wine;
 mod create_prefix;
+mod install_mfc140;
+mod install_corefonts;
 mod download_diff;
 mod launch;
 
@@ -297,7 +299,10 @@ impl SimpleComponent for App {
                                                 Some(LauncherState::Launch) => "media-playback-start-symbolic",
 
                                                 Some(LauncherState::WineNotInstalled) |
-                                                Some(LauncherState::PrefixNotExists) => "document-save-symbolic",
+                                                Some(LauncherState::PrefixNotExists) |
+
+                                                Some(LauncherState::Mfc140NotInstalled) |
+                                                Some(LauncherState::CorefontsNotInstalled(_)) |
 
                                                 Some(LauncherState::GameUpdateAvailable(_)) |
                                                 Some(LauncherState::GameNotInstalled(_)) => "document-save-symbolic",
@@ -311,6 +316,10 @@ impl SimpleComponent for App {
 
                                                 Some(LauncherState::WineNotInstalled) => tr("download-wine"),
                                                 Some(LauncherState::PrefixNotExists)  => tr("create-prefix"),
+
+                                                // TODO: add localization
+                                                Some(LauncherState::Mfc140NotInstalled) => String::from("Install mfc140"),
+                                                Some(LauncherState::CorefontsNotInstalled(_)) => String::from("Install corefonts"),
 
                                                 Some(LauncherState::GameUpdateAvailable(diff)) => {
                                                     match (Config::get(), diff.file_name()) {
@@ -679,6 +688,11 @@ impl SimpleComponent for App {
                 let updater = clone!(@strong sender => move |state| {
                     if show_status_page {
                         match state {
+                            StateUpdating::Components => {
+                                // TODO: add localizations
+                                sender.input(AppMsg::SetLoadingStatus(Some(Some(String::from("Loading launcher state: checking components")))));
+                            }
+
                             StateUpdating::Game => {
                                 sender.input(AppMsg::SetLoadingStatus(Some(Some(tr("loading-launcher-state--game")))));
                             }
@@ -754,6 +768,10 @@ impl SimpleComponent for App {
 
                     LauncherState::WineNotInstalled => download_wine::download_wine(sender, self.progress_bar.sender().to_owned()),
                     LauncherState::PrefixNotExists => create_prefix::create_prefix(sender),
+
+                    LauncherState::Mfc140NotInstalled => install_mfc140::install_mfc140(sender),
+                    LauncherState::CorefontsNotInstalled(fonts) =>
+                        install_corefonts::install_corefonts(sender, self.progress_bar.sender().to_owned(), fonts.clone()),
 
                     LauncherState::GameUpdateAvailable(diff) |
                     LauncherState::GameNotInstalled(diff) =>

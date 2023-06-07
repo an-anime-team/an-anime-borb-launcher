@@ -84,7 +84,7 @@ impl SimpleAsyncComponent for WelcomeApp {
         match msg {
             #[allow(unused_must_use)]
             WelcomeAppMsg::Continue => {
-                if is_available("git") {
+                if is_available("git") && is_available("cabextract") {
                     sender.output(Self::Output::ScrollToDefaultPaths);
                 } else {
                     sender.output(Self::Output::ScrollToDependencies);

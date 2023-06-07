@@ -7,7 +7,7 @@ use adw::prelude::*;
 use anime_launcher_sdk::wincompatlib::prelude::*;
 
 use anime_launcher_sdk::components::*;
-use anime_launcher_sdk::components::wine::WincompatlibWine;
+use anime_launcher_sdk::components::wine::UnifiedWine;
 
 use super::GeneralAppMsg;
 
@@ -426,7 +426,7 @@ impl SimpleAsyncComponent for ComponentsPage {
                             let wine_name = version.name.to_string();
 
                             std::thread::spawn(move || {
-                                match wine.update_prefix::<&str>(None) {
+                                match wine.update_prefix(None::<&str>) {
                                     Ok(_) => {
                                         config.game.wine.selected = Some(wine_name); 
 
@@ -463,8 +463,8 @@ impl SimpleAsyncComponent for ComponentsPage {
                                 let mut wine = match config.get_selected_wine() {
                                     Ok(Some(version)) => {
                                         match version.to_wine(config.components.path, Some(config.game.wine.builds.join(&version.name))) {
-                                            WincompatlibWine::Default(wine) => wine,
-                                            WincompatlibWine::Proton(_) => return
+                                            UnifiedWine::Default(wine) => wine,
+                                            UnifiedWine::Proton(_) => return
                                         }
                                     }
 
