@@ -45,6 +45,8 @@ pub fn install_corefonts(sender: ComponentSender<App>, progress_bar_input: Sende
                     progress_bar_input.send(ProgressBarMsg::UpdateProgress(i as u64 + 1, fonts.len() as u64)).unwrap();
                 }
 
+                progress_bar_input.send(ProgressBarMsg::DisplayFraction(true)).unwrap();
+
                 sender.input(AppMsg::SetDownloading(false));
                 sender.input(AppMsg::UpdateLauncherState {
                     perform_on_download_needed: false,
