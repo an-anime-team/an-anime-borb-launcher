@@ -4,7 +4,6 @@ use relm4::component::*;
 use adw::prelude::*;
 
 use anime_launcher_sdk::anime_game_core::prelude::*;
-use anime_launcher_sdk::anime_game_core::pgr::prelude::*;
 
 use crate::i18n::*;
 
@@ -47,7 +46,6 @@ pub enum ProgressBarMsg {
     UpdateProgress(u64, u64),
 
     UpdateFromState(InstallerUpdate),
-    UpdateFromDiffState(Update),
 
     SetVisible(bool)
 }
@@ -153,24 +151,6 @@ impl SimpleAsyncComponent for ProgressBar {
 
                     InstallerUpdate::DownloadingError(err) => tracing::error!("Downloading error: {:?}", err),
                     InstallerUpdate::UnpackingError(err) => tracing::error!("Unpacking error: {:?}", err)
-                }
-            }
-
-            ProgressBarMsg::UpdateFromDiffState(state) => {
-                match state {
-                    Update::CheckingFreeSpace(_) => self.caption = Some(tr("checking-free-space")),
-                    Update::DownloadingStarted => self.caption = Some(tr("downloading")),
-
-                    Update::DownloadingProgress(curr, total) => {
-                        self.fraction = curr as f64 / total as f64;
-
-                        self.downloaded = Some((
-                            prettify_bytes(curr),
-                            prettify_bytes(total)
-                        ));
-                    }
-
-                    Update::DownloadingFinished => tracing::info!("Downloading finished")
                 }
             }
 

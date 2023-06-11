@@ -17,13 +17,9 @@ pub fn download_diff(sender: ComponentSender<App>, progress_bar_input: Sender<Pr
     std::thread::spawn(move || {
         let config = Config::get().unwrap();
 
-        if let Some(temp) = config.launcher.temp {
-            diff = diff.with_temp_folder(temp);
-        }
-
-        let result = diff.install_to(game_path, clone!(@strong sender => move |state| {
+        let result = diff.install_to(config.game.path, clone!(@strong sender => move |state| {
             match &state {
-                DiffUpdate::InstallerUpdate(InstallerUpdate::DownloadingError(err)) => {
+                InstallerUpdate::DownloadingError(err) => {
                     tracing::error!("Downloading failed: {err}");
 
                     sender.input(AppMsg::Toast {
@@ -32,7 +28,7 @@ pub fn download_diff(sender: ComponentSender<App>, progress_bar_input: Sender<Pr
                     });
                 }
 
-                DiffUpdate::InstallerUpdate(InstallerUpdate::UnpackingError(err)) => {
+                InstallerUpdate::UnpackingError(err) => {
                     tracing::error!("Unpacking failed: {err}");
 
                     sender.input(AppMsg::Toast {
