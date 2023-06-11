@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use relm4::prelude::*;
 use relm4::component::*;
 
@@ -12,9 +14,8 @@ use anime_launcher_sdk::components::wine::UnifiedWine;
 use anime_launcher_sdk::config::ConfigExt;
 use anime_launcher_sdk::pgr::config::Config;
 
-use std::path::PathBuf;
-
 use super::main::FirstRunAppMsg;
+
 use crate::ui::components::*;
 use crate::i18n::*;
 use crate::*;
@@ -434,6 +435,8 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
                     });
                 }
             }
+
+            // TODO: perhaps I could re-use main/create_prefix.rs here?
 
             #[allow(unused_must_use)]
             DownloadComponentsAppMsg::CreatePrefix => {

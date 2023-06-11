@@ -17,15 +17,15 @@ glib-build-tools = "0.17"
 
 [dependencies.anime-launcher-sdk]
 git = "https://github.com/an-anime-team/anime-launcher-sdk"
-tag = "1.6.2"
+tag = "1.7.2"
 features = ["all", "pgr"]
 
 # path = "../anime-launcher-sdk" # ! for dev purposes only
 
 [dependencies]
-relm4 = { version = "0.6.0-beta.1", features = ["macros", "libadwaita"] }
+relm4 = { version = "0.6.0", features = ["macros", "libadwaita"] }
 gtk = { package = "gtk4", version = "0.6", features = ["v4_8"] }
-adw = { package = "libadwaita", version = "0.3", features = ["v1_2"] }
+adw = { package = "libadwaita", version = "0.4", features = ["v1_2"] }
 
 rfd = { version = "0.11", features = ["xdg-portal"], default-features = false }
 open = "4.0"

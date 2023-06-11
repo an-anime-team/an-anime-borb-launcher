@@ -11,9 +11,7 @@ use anime_launcher_sdk::components::wine::UnifiedWine;
 
 use super::GeneralAppMsg;
 
-use crate::ui::components;
 use crate::ui::components::*;
-
 use crate::i18n::*;
 use crate::*;
 
@@ -345,12 +343,12 @@ impl SimpleAsyncComponent for ComponentsPage {
         match msg {
             ComponentsPageMsg::WineRecommendedOnly(state) => {
                 // todo
-                self.wine_components.sender().send(components::list::AppMsg::ShowRecommendedOnly(state)).unwrap();
+                self.wine_components.sender().send(ComponentsListMsg::ShowRecommendedOnly(state)).unwrap();
             }
 
             ComponentsPageMsg::DxvkRecommendedOnly(state) => {
                 // todo
-                self.dxvk_components.sender().send(components::list::AppMsg::ShowRecommendedOnly(state)).unwrap();
+                self.dxvk_components.sender().send(ComponentsListMsg::ShowRecommendedOnly(state)).unwrap();
             }
 
             ComponentsPageMsg::UpdateDownloadedWine => {

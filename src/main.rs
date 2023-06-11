@@ -4,7 +4,7 @@ use anime_launcher_sdk::config::ConfigExt;
 use anime_launcher_sdk::pgr::config::{Config, Schema};
 
 use anime_launcher_sdk::pgr::states::LauncherState;
-use anime_launcher_sdk::pgr::consts::launcher_dir;
+use anime_launcher_sdk::pgr::consts::*;
 
 use anime_launcher_sdk::anime_game_core::prelude::*;
 use anime_launcher_sdk::anime_game_core::pgr::prelude::*;
@@ -47,11 +47,14 @@ lazy_static::lazy_static! {
     /// Path to launcher folder. Standard is `$HOME/.local/share/anime-borb-launcher`
     pub static ref LAUNCHER_FOLDER: PathBuf = launcher_dir().expect("Failed to get launcher folder");
 
+    /// Path to launcher's cache folder. Standard is `$HOME/.cache/anime-borb-launcher`
+    pub static ref CACHE_FOLDER: PathBuf = cache_dir().expect("Failed to get launcher's cache folder");
+
     /// Path to `debug.log` file. Standard is `$HOME/.local/share/anime-borb-launcher/debug.log`
     pub static ref DEBUG_FILE: PathBuf = LAUNCHER_FOLDER.join("debug.log");
 
-    /// Path to `background` file. Standard is `$HOME/.local/share/anime-borb-launcher/background`
-    pub static ref BACKGROUND_FILE: PathBuf = LAUNCHER_FOLDER.join("background");
+    /// Path to `background` file. Standard is `$HOME/.cache/anime-borb-launcher/background`
+    pub static ref BACKGROUND_FILE: PathBuf = CACHE_FOLDER.join("background");
 
     /// Path to `.background-hash` file. Standard is `$HOME/.local/share/anime-borb-launcher/.background-hash`
     pub static ref BACKGROUND_HASH_FILE: PathBuf = LAUNCHER_FOLDER.join(".background-hash");
@@ -76,6 +79,7 @@ fn main() {
         std::fs::write(FIRST_RUN_FILE.as_path(), "").expect("Failed to create .first-run file");
 
         // Set initial launcher language based on system language
+        // CONFIG is initialized lazily so it will contain following changes as well
         let mut config = Config::get().expect("Failed to get config");
 
         config.launcher.language = i18n::format_lang(&i18n::get_default_lang());

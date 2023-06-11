@@ -1,3 +1,5 @@
+use std::path::Path;
+
 use relm4::{
     prelude::*,
     Sender
@@ -8,6 +10,7 @@ use gtk::glib::clone;
 use crate::*;
 use crate::i18n::*;
 use crate::ui::components::*;
+
 use super::{App, AppMsg};
 
 #[allow(unused_must_use)]
@@ -107,6 +110,8 @@ pub fn repair_game(sender: ComponentSender<App>, progress_bar_input: Sender<Prog
 
                         progress_bar_input.send(ProgressBarMsg::UpdateProgress(i as u64, total as u64));
                     }
+
+                    progress_bar_input.send(ProgressBarMsg::DisplayFraction(true));
                 }
             }
 

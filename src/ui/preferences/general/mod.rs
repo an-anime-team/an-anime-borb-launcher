@@ -13,6 +13,7 @@ use anime_launcher_sdk::pgr::config::schema::launcher::LauncherStyle;
 pub mod components;
 
 use components::*;
+
 use super::main::PreferencesAppMsg;
 
 use crate::ui::migrate_installation::MigrateInstallationApp;

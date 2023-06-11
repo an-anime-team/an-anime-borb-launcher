@@ -573,90 +573,97 @@ impl SimpleComponent for App {
         std::thread::spawn(move || {
             tracing::info!("Initializing heavy tasks");
 
+            let mut tasks = Vec::new();
+
             // Download background picture if needed
 
             if download_picture {
-                sender.input(AppMsg::SetLoadingStatus(Some(Some(tr("downloading-background-picture")))));
+                tasks.push(std::thread::spawn(clone!(@strong sender => move || {
+                    if let Err(err) = crate::background::download_background() {
+                        tracing::error!("Failed to download background picture: {err}");
 
-                if let Err(err) = crate::background::download_background() {
-                    tracing::error!("Failed to download background picture: {err}");
-
-                    sender.input(AppMsg::Toast {
-                        title: tr("background-downloading-failed"),
-                        description: Some(err.to_string())
-                    });
-                }
+                        sender.input(AppMsg::Toast {
+                            title: tr("background-downloading-failed"),
+                            description: Some(err.to_string())
+                        });
+                    }
+                })));
             }
 
             // Update components index
 
-            sender.input(AppMsg::SetLoadingStatus(Some(Some(tr("updating-components-index")))));
+            tasks.push(std::thread::spawn(clone!(@strong sender => move || {
+                let components = ComponentsLoader::new(&CONFIG.components.path);
 
-            let components = ComponentsLoader::new(&CONFIG.components.path);
+                match components.is_sync(&CONFIG.components.servers) {
+                    Ok(Some(_)) => (),
 
-            match components.is_sync(&CONFIG.components.servers) {
-                Ok(Some(_)) => (),
+                    Ok(None) => {
+                        for host in &CONFIG.components.servers {
+                            match components.sync(host) {
+                                Ok(changes) => {
+                                    sender.input(AppMsg::Toast {
+                                        title: tr("components-index-updated"),
+                                        description: if changes.is_empty() {
+                                            None
+                                        } else {
+                                            Some(changes.into_iter()
+                                                .map(|line| format!("- {line}"))
+                                                .collect::<Vec<_>>()
+                                                .join("\n"))
+                                        }
+                                    });
 
-                Ok(None) => {
-                    for host in &CONFIG.components.servers {
-                        match components.sync(host) {
-                            Ok(changes) => {
-                                sender.input(AppMsg::Toast {
-                                    title: tr("components-index-updated"),
-                                    description: if changes.is_empty() {
-                                        None
-                                    } else {
-                                        Some(changes.into_iter()
-                                            .map(|line| format!("- {line}"))
-                                            .collect::<Vec<_>>()
-                                            .join("\n"))
-                                    }
-                                });
+                                    break;
+                                }
 
-                                break;
-                            }
+                                Err(err) => {
+                                    tracing::error!("Failed to sync components index");
 
-                            Err(err) => {
-                                tracing::error!("Failed to sync components index");
-
-                                sender.input(AppMsg::Toast {
-                                    title: tr("components-index-sync-failed"),
-                                    description: Some(err.to_string())
-                                });
+                                    sender.input(AppMsg::Toast {
+                                        title: tr("components-index-sync-failed"),
+                                        description: Some(err.to_string())
+                                    });
+                                }
                             }
                         }
                     }
-                }
 
-                Err(err) => {
-                    tracing::error!("Failed to verify that components index synced");
+                    Err(err) => {
+                        tracing::error!("Failed to verify that components index synced");
 
-                    sender.input(AppMsg::Toast {
-                        title: tr("components-index-verify-failed"),
-                        description: Some(err.to_string())
-                    });
+                        sender.input(AppMsg::Toast {
+                            title: tr("components-index-verify-failed"),
+                            description: Some(err.to_string())
+                        });
+                    }
                 }
-            }
+            })));
 
             // Update initial game version status
 
-            sender.input(AppMsg::SetLoadingStatus(Some(Some(tr("loading-game-version")))));
+            tasks.push(std::thread::spawn(clone!(@strong sender => move || {
+                sender.input(AppMsg::SetGameDiff(match GAME.try_get_diff() {
+                    Ok(diff) => Some(diff),
+                    Err(err) => {
+                        tracing::error!("Failed to find game diff: {err}");
 
-            sender.input(AppMsg::SetGameDiff(match GAME.try_get_diff() {
-                Ok(diff) => Some(diff),
-                Err(err) => {
-                    tracing::error!("Failed to find game diff: {err}");
+                        sender.input(AppMsg::Toast {
+                            title: tr("game-diff-finding-error"),
+                            description: Some(err.to_string())
+                        });
 
-                    sender.input(AppMsg::Toast {
-                        title: tr("game-diff-finding-error"),
-                        description: Some(err.to_string())
-                    });
+                        None
+                    }
+                }));
 
-                    None
-                }
-            }));
+                tracing::info!("Updated game version status");
+            })));
 
-            tracing::info!("Updated game version status");
+            // Await for tasks to finish execution
+            for task in tasks {
+                task.join().expect("Failed to join task");
+            }
 
             // Update launcher state
             sender.input(AppMsg::UpdateLauncherState {
