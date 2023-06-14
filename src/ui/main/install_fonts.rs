@@ -11,7 +11,7 @@ use crate::ui::components::*;
 
 use super::{App, AppMsg};
 
-pub fn install_corefonts(sender: ComponentSender<App>, progress_bar_input: Sender<ProgressBarMsg>, fonts: Vec<Corefont>) {
+pub fn install_fonts(sender: ComponentSender<App>, progress_bar_input: Sender<ProgressBarMsg>, fonts: Vec<Font>) {
     std::thread::spawn(move || {
         let config = Config::get().unwrap();
 
@@ -31,7 +31,7 @@ pub fn install_corefonts(sender: ComponentSender<App>, progress_bar_input: Sende
                 for (i, font) in fonts.iter().copied().enumerate() {
                     progress_bar_input.send(ProgressBarMsg::UpdateCaption(Some(format!("{} {}", tr("downloading"), font.name())))).unwrap();
 
-                    if let Err(err) = wine.install_corefont(font) {
+                    if let Err(err) = wine.install_font(font) {
                         tracing::error!("Failed to install font: {}", font.name());
 
                         sender.input(AppMsg::Toast {

@@ -33,9 +33,8 @@ updating-components-index = Updating components index
 loading-game-version = Játékverzió betöltése
 loading-patch-status = Patch státusz betöltése
 loading-launcher-state = Launcher állapot betöltése
+loading-launcher-state--components = Loading launcher state: checking components
 loading-launcher-state--game = Launcher állapot betöltése: játékverzió ellenőrzése
-loading-launcher-state--voice = Launcher állapot betöltése: {$locale} hangnyelv ellenőrzése
-loading-launcher-state--patch = Launcher állapot betöltése: telepített patch ellenőrzése
 
 
 checking-free-space = Szabad hely ellenőrzése
@@ -57,6 +56,8 @@ migrate-folders-tooltip = Játékmappa struktúra frissítése
 apply-patch = Patch alkalmazása
 download-wine = Wine letöltése
 create-prefix = Prefix létrehozása
+install-mfc140 = Install mfc140
+install-fonts = Install fonts
 update = Frissítés
 download = Letöltés
 predownload-update = {$version} verzió előtöltése ({$size})

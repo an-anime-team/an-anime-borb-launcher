@@ -84,41 +84,29 @@ impl SimpleComponent for AboutDialog {
             ].join("\n"),
 
             set_release_notes_version: &APP_VERSION,
-            /*set_release_notes: &[
+            set_release_notes: &[
                 "<p>Added</p>",
 
                 "<ul>",
-                    "<li>Added Discord RPC icon selection</li>",
-                    "<li>Added Japanese</li>",
-                    "<li>Added Hungarian</li>",
+                    "<li>Added mfc140 and fonts installing localization</li>",
                 "</ul>",
 
                 "<p>Fixed</p>",
 
                 "<ul>",
-                    "<li>Fixed progress bar style after running game repairer</li>",
-                    "<li>Fixed repair button functionality</li>",
-                    "<li>Fixed default launcher language selection at the first start</li>",
-                    "<li>Fixed some installer updates reporting (including \"checking free space\")</li>",
+                    "<li>Fixed check button style for newly made sessions</li>",
+                    "<li>Fixed repairer's NaN progress</li>",
+                    "<li>Fixed game session selection when current one is removed</li>",
+                    "<li>Fixed mfc140 and fonts installing</li>",
                 "</ul>",
 
                 "<p>Changed</p>",
 
                 "<ul>",
-                    "<li>Reworked game sessions selection</li>",
-                    "<li>Updated Indonesian</li>",
-                    "<li>Updated French</li>",
-                    "<li>Made initial tasks async which has decreased startup time</li>",
-                    "<li>Updated fps unlocker to 2.1.1</li>",
+                    "<li>Updated Spanish</li>",
+                    "<li>Updated Hungarian</li>",
                 "</ul>",
-
-                "<p>Removed</p>",
-
-                "<ul>",
-                    "<li>Removed 3.7.0 workaround</li>",
-                    "<li>Removed patch mirror migration</li>",
-                "</ul>",
-            ].join("\n"),*/
+            ].join("\n"),
 
             set_modal: true,
             set_hide_on_close: true,

@@ -17,8 +17,8 @@ glib-build-tools = "0.17"
 
 [dependencies.anime-launcher-sdk]
 git = "https://github.com/an-anime-team/anime-launcher-sdk"
-tag = "1.7.4"
-features = ["all", "pgr"]
+tag = "1.7.6"
+features = ["all", "pgr", "pgr-patch"]
 
 # path = "../anime-launcher-sdk" # ! for dev purposes only
 
