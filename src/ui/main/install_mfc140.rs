@@ -1,6 +1,6 @@
 use relm4::prelude::*;
 
-use anime_launcher_sdk::components::mfc140;
+use anime_launcher_sdk::anime_game_core::patches::mfc140;
 
 use crate::*;
 use crate::i18n::*;
@@ -13,7 +13,7 @@ pub fn install_mfc140(sender: ComponentSender<App>) {
     std::thread::spawn(move || {
         let config = Config::get().unwrap();
 
-        if let Err(err) = mfc140::install(config.get_wine_prefix_path()) {
+        if let Err(err) = mfc140::install(config.get_wine_prefix_path(), config.launcher.temp) {
             tracing::error!("Failed to install mfc140: {err}");
 
             sender.input(AppMsg::Toast {

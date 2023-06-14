@@ -14,7 +14,7 @@ mod repair_game;
 mod download_wine;
 mod create_prefix;
 mod install_mfc140;
-mod install_corefonts;
+mod install_fonts;
 mod download_diff;
 mod launch;
 
@@ -302,7 +302,7 @@ impl SimpleComponent for App {
                                                 Some(LauncherState::PrefixNotExists) |
 
                                                 Some(LauncherState::Mfc140NotInstalled) |
-                                                Some(LauncherState::CorefontsNotInstalled(_)) |
+                                                Some(LauncherState::FontsNotInstalled(_)) |
 
                                                 Some(LauncherState::GameUpdateAvailable(_)) |
                                                 Some(LauncherState::GameNotInstalled(_)) => "document-save-symbolic",
@@ -319,7 +319,7 @@ impl SimpleComponent for App {
 
                                                 // TODO: add localization
                                                 Some(LauncherState::Mfc140NotInstalled) => String::from("Install mfc140"),
-                                                Some(LauncherState::CorefontsNotInstalled(_)) => String::from("Install corefonts"),
+                                                Some(LauncherState::FontsNotInstalled(_)) => String::from("Install corefonts"),
 
                                                 Some(LauncherState::GameUpdateAvailable(diff)) => {
                                                     match (Config::get(), diff.file_name()) {
@@ -774,11 +774,11 @@ impl SimpleComponent for App {
                     LauncherState::Launch => launch::launch(sender),
 
                     LauncherState::WineNotInstalled => download_wine::download_wine(sender, self.progress_bar.sender().to_owned()),
-                    LauncherState::PrefixNotExists => create_prefix::create_prefix(sender),
+                    LauncherState::PrefixNotExists  => create_prefix::create_prefix(sender),
 
                     LauncherState::Mfc140NotInstalled => install_mfc140::install_mfc140(sender),
-                    LauncherState::CorefontsNotInstalled(fonts) =>
-                        install_corefonts::install_corefonts(sender, self.progress_bar.sender().to_owned(), fonts.clone()),
+                    LauncherState::FontsNotInstalled(fonts) =>
+                        install_fonts::install_fonts(sender, self.progress_bar.sender().to_owned(), fonts.clone()),
 
                     LauncherState::GameUpdateAvailable(diff) |
                     LauncherState::GameNotInstalled(diff) =>
