@@ -33,9 +33,8 @@ updating-components-index = 正在更新组件索引
 loading-game-version = 正在获取游戏版本号
 loading-patch-status = 正在获取补丁状态
 loading-launcher-state = 正在计算启动器状态
+loading-launcher-state--components = Loading launcher state: checking components
 loading-launcher-state--game = 正在计算启动器状态: 验证游戏版本号
-loading-launcher-state--voice = 正在计算启动器状态: 验证{$locale}语音
-loading-launcher-state--patch = 正在计算启动器状态: 验证已安装补丁
 
 
 checking-free-space = 正在检查剩余空间
@@ -57,6 +56,8 @@ migrate-folders-tooltip = 更新游戏目录结构
 apply-patch = 安装补丁
 download-wine = 下载 Wine
 create-prefix = 创建 Wine prefix
+install-mfc140 = Install mfc140
+install-fonts = Install fonts
 update = 更新
 download = 下载
 predownload-update = 预下载版本更新 {$version} ({$size})

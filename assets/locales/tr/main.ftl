@@ -33,9 +33,8 @@ updating-components-index = Bileşenlerin dizini güncelleniyor
 loading-game-version = Oyun sürümü yükleniyor
 loading-patch-status = Yama durumu yükleniyor
 loading-launcher-state = İstemci durumu yükleniyor
+loading-launcher-state--components = Loading launcher state: checking components
 loading-launcher-state--game = Loading launcher state: oyun versiyonu doğrulanıyor
-loading-launcher-state--voice = Loading launcher state: {$locale} seslendirme doğrulanıyor
-loading-launcher-state--patch = Loading launcher state: indirilmiş yamanın durumu yükleniyor
 
 
 checking-free-space = Boş alan kontrol ediliyor
@@ -57,6 +56,8 @@ migrate-folders-tooltip = Oyun dosyaları yapısını güncelle
 apply-patch = Yamayı uygula
 download-wine = Wine indir
 create-prefix = Prefix oluştur
+install-mfc140 = Install mfc140
+install-fonts = Install fonts
 update = Güncelle
 download = İndir
 predownload-update =  Güncellemeyi önceden indir{$version}  ({$size})

@@ -317,9 +317,8 @@ impl SimpleComponent for App {
                                                 Some(LauncherState::WineNotInstalled) => tr("download-wine"),
                                                 Some(LauncherState::PrefixNotExists)  => tr("create-prefix"),
 
-                                                // TODO: add localization
-                                                Some(LauncherState::Mfc140NotInstalled) => String::from("Install mfc140"),
-                                                Some(LauncherState::FontsNotInstalled(_)) => String::from("Install corefonts"),
+                                                Some(LauncherState::Mfc140NotInstalled) => tr("install-mfc140"),
+                                                Some(LauncherState::FontsNotInstalled(_)) => tr("install-fonts"),
 
                                                 Some(LauncherState::GameUpdateAvailable(diff)) => {
                                                     match (Config::get(), diff.file_name()) {
@@ -696,8 +695,7 @@ impl SimpleComponent for App {
                     if show_status_page {
                         match state {
                             StateUpdating::Components => {
-                                // TODO: add localizations
-                                sender.input(AppMsg::SetLoadingStatus(Some(Some(String::from("Loading launcher state: checking components")))));
+                                sender.input(AppMsg::SetLoadingStatus(Some(Some(tr("loading-launcher-state--components")))));
                             }
 
                             StateUpdating::Game => {

@@ -33,9 +33,8 @@ updating-components-index = Updating components index
 loading-game-version = Chargement de la version du jeu
 loading-patch-status = Chargement du statut du patch
 loading-launcher-state = Chargement de l'état du launcher
+loading-launcher-state--components = Loading launcher state: checking components
 loading-launcher-state--game = Chargement de l'état du launcher : vérification de la version du jeu
-loading-launcher-state--voice = Chargement de l'état du launcher : vérification des voiceover en {$locale}
-loading-launcher-state--patch = Chargement de l'état du launcher : vérification des patch installés
 
 
 checking-free-space = Vérification de l'espace disque disponible
@@ -57,6 +56,8 @@ migrate-folders-tooltip = Update game folders structure
 apply-patch = Appliquer le patch
 download-wine = Télécharger wine
 create-prefix = Créer le préfix wine
+install-mfc140 = Install mfc140
+install-fonts = Install fonts
 update = Mettre à jour
 download = Télécharger
 predownload-update = Pré-télécharger la mise à jour {$version} ({$size})

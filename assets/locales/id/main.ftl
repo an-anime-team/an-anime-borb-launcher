@@ -33,9 +33,8 @@ updating-components-index = Memperbarui indeks komponen
 loading-game-version = Memuat versi game
 loading-patch-status = Memuat status patch 
 loading-launcher-state = Memuat keadaan launcher 
+loading-launcher-state--components = Loading launcher state: checking components
 loading-launcher-state--game = Memuat keadaan launcher: memverifikasi versi game
-loading-launcher-state--voice = Memuat keadaan launcher: memverifikasi {$locale} bahasa suara 
-loading-launcher-state--patch = Memuat keadaan launcher: memverifikasi patch yang ter-install
 
 
 checking-free-space = Mengecek penyimpanan kosong 
@@ -57,6 +56,8 @@ migrate-folders-tooltip = Perbarui struktur folder game
 apply-patch = Terapkan patch 
 download-wine = Unduh wine
 create-prefix = Buat prefix
+install-mfc140 = Install mfc140
+install-fonts = Install fonts
 update = Perbarui
 download = Unduh 
 predownload-update = Pra-unduh pembaruan versi {$version} ({$size})

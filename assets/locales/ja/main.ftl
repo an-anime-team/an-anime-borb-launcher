@@ -33,9 +33,8 @@ updating-components-index = コンポーネントインデックスを更新中
 loading-game-version = ゲームバージョンを読み込み中
 loading-patch-status = パッチステータスを確認中
 loading-launcher-state = ランチャーの状態を読み込み中
+loading-launcher-state--components = ランチャーの状態を読み込み中: コンポーネントを確認中
 loading-launcher-state--game = ランチャーの状態を読み込み中: ゲームバージョンを確認中
-loading-launcher-state--voice = ランチャーの状態を読み込み中: {$locale} の音声を確認中
-loading-launcher-state--patch = ランチャーの状態を読み込み中 インストール済みパッチを確認中
 
 
 checking-free-space = 空き容量を確認しています
@@ -57,6 +56,8 @@ migrate-folders-tooltip = ゲームフォルダ構成を更新
 apply-patch = パッチを適用する
 download-wine = ワインをダウンロード
 create-prefix = プレフィックスを作成
+install-mfc140 = mfc140をインストール
+install-fonts = フォントをインストール
 update = 更新
 download = ダウンロード
 predownload-update = {$version} の早期アップデート({$size})
