@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added mfc140 and fonts installing localization
+
 ### Fixed
 
 - Fixed check button style for newly made sessions
 - Fixed repairer's NaN progress
 - Fixed game session selection when current one is removed
+- Fixed mfc140 and fonts installing
 
 ### Changed
 

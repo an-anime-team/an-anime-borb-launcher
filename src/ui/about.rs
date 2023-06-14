@@ -84,13 +84,11 @@ impl SimpleComponent for AboutDialog {
             ].join("\n"),
 
             set_release_notes_version: &APP_VERSION,
-            /*set_release_notes: &[
+            set_release_notes: &[
                 "<p>Added</p>",
 
                 "<ul>",
-                    "<li>Added Discord RPC icon selection</li>",
-                    "<li>Added Japanese</li>",
-                    "<li>Added Hungarian</li>",
+                    "<li>Added mfc140 and fonts installing localization</li>",
                 "</ul>",
 
                 "<p>Fixed</p>",
@@ -99,6 +97,7 @@ impl SimpleComponent for AboutDialog {
                     "<li>Fixed check button style for newly made sessions</li>",
                     "<li>Fixed repairer's NaN progress</li>",
                     "<li>Fixed game session selection when current one is removed</li>",
+                    "<li>Fixed mfc140 and fonts installing</li>",
                 "</ul>",
 
                 "<p>Changed</p>",
@@ -107,7 +106,7 @@ impl SimpleComponent for AboutDialog {
                     "<li>Updated Spanish</li>",
                     "<li>Updated Hungarian</li>",
                 "</ul>",
-            ].join("\n"),*/
+            ].join("\n"),
 
             set_modal: true,
             set_hide_on_close: true,
