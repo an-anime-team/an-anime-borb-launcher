@@ -96,27 +96,16 @@ impl SimpleComponent for AboutDialog {
                 "<p>Fixed</p>",
 
                 "<ul>",
-                    "<li>Fixed progress bar style after running game repairer</li>",
-                    "<li>Fixed repair button functionality</li>",
-                    "<li>Fixed default launcher language selection at the first start</li>",
-                    "<li>Fixed some installer updates reporting (including \"checking free space\")</li>",
+                    "<li>Fixed check button style for newly made sessions</li>",
+                    "<li>Fixed repairer's NaN progress</li>",
+                    "<li>Fixed game session selection when current one is removed</li>",
                 "</ul>",
 
                 "<p>Changed</p>",
 
                 "<ul>",
-                    "<li>Reworked game sessions selection</li>",
-                    "<li>Updated Indonesian</li>",
-                    "<li>Updated French</li>",
-                    "<li>Made initial tasks async which has decreased startup time</li>",
-                    "<li>Updated fps unlocker to 2.1.1</li>",
-                "</ul>",
-
-                "<p>Removed</p>",
-
-                "<ul>",
-                    "<li>Removed 3.7.0 workaround</li>",
-                    "<li>Removed patch mirror migration</li>",
+                    "<li>Updated Spanish</li>",
+                    "<li>Updated Hungarian</li>",
                 "</ul>",
             ].join("\n"),*/
 
