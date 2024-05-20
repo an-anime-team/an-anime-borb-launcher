@@ -13,6 +13,17 @@
 
 <br>
 
+<h1 align="center">
+    ❗ Launcher is not actively maintained ❗
+</h1>
+
+We do not actively maintain this launcher and don't provide any official support for related issues.
+
+You could try running [Babylonia-terminal](https://github.com/ALEZ-DEV/Babylonia-terminal), a CLI launcher, instead.
+
+<br>
+<br>
+
 # ♥️ Useful links
 
 * [Wiki](https://github.com/an-anime-team/an-anime-borb-launcher/wiki) contains some basic FAQ, installation instructions and more
