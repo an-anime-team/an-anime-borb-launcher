@@ -1,3 +1,8 @@
+# !! This launcher is now deprecated !! A new launcher has been created for this purpose, [Babylonia-terminal](https://github.com/ALEZ-DEV/Babylonia-terminal)
+
+
+***
+
 <picture>
     <source media="(prefers-color-scheme: dark)" srcset="repository/logo-dark.png">
     <img src="repository/logo-light.png">
