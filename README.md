@@ -1,4 +1,5 @@
-# !! This launcher is now deprecated !! A new launcher has been created for this purpose, [Babylonia-terminal](https://github.com/ALEZ-DEV/Babylonia-terminal)
+# !! This launcher is no longer maintained !! 
+There exist another launcher (not maintained by our team), check this out instead, [Babylonia-terminal](https://github.com/ALEZ-DEV/Babylonia-terminal)
 
 
 ***
